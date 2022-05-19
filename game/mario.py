@@ -44,7 +44,7 @@ class Mario():
         """
         Import texture
         """
-        txtr = pygame.image.load(f'./textures/{name}.png')
+        txtr = pygame.image.load(f'{PATH}/textures/{name}.png')
         txtr = pygame.transform.scale(txtr, (self.width, self.height))
         return txtr
 
@@ -77,7 +77,7 @@ class Mario():
         """
         Launch the huge fall when mario is in a hole
         """
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/gameover.mp3'))
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
         self.freeze = True
         while self.y < HEIGHT:
             self.y += 1
@@ -120,7 +120,7 @@ class Mario():
             self.freeze = True
             self.x = field.x_flag
             self.y = HEIGHT-H_FLOOR-240
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/success.mp3'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/success.mp3'))
             time.sleep(3)
             self.finish = True
 
@@ -175,7 +175,7 @@ class Mario():
         Launch a provided sound
         """
         global crt_chnl
-        sound = pygame.mixer.Sound(f'./songs/{name}.mp3')
+        sound = pygame.mixer.Sound(f'{PATH}/songs/{name}.mp3')
         sound.set_volume(vol)
         pygame.mixer.Channel(crt_chnl).play(sound)
         

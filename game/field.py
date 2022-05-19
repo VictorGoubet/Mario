@@ -26,12 +26,12 @@ class Field():
         
 
         # load textures
-        self.sky_txtr = pygame.image.load(r'./textures/sky.png')
-        self.coin_txtr = pygame.image.load(r'./textures/coin.png')
+        self.sky_txtr = pygame.image.load(f'{PATH}/textures/sky.png')
+        self.coin_txtr = pygame.image.load(f'{PATH}/textures/coin.png')
         self.coin_txtr = pygame.transform.scale(self.coin_txtr, (self.s_coin, self.s_coin))
-        self.floor_txtr = pygame.image.load(r'./textures/floor.png')
-        self.clock_txtr = pygame.image.load(r'./textures/clock.png')
-        self.flag_txtr = pygame.image.load(r'./textures/flag.png')
+        self.floor_txtr = pygame.image.load(f'{PATH}/textures/floor.png')
+        self.clock_txtr = pygame.image.load(f'{PATH}/textures/clock.png')
+        self.flag_txtr = pygame.image.load(f'{PATH}/textures/flag.png')
         self.flag_txtr = pygame.transform.scale(self.flag_txtr, (110, 250))
     
     def create_floor(self, next=True):

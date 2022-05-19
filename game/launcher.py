@@ -6,7 +6,7 @@ from menu import Menu
 from thread import myThread
 
 
-def game():
+def game(key_function=None):
     """
     Launch the entire game
     """
@@ -27,7 +27,7 @@ def game():
             mario, field, t0 = menu.update()
         else:
             # manage physics
-            keys = pygame.key.get_pressed() 
+            keys = key_function([mario, field]) if key_function else pygame.key.get_pressed()
             moves_thread = myThread("moves", lambda:mario.move(keys, field))
             moves_thread.start()
             

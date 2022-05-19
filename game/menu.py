@@ -14,9 +14,9 @@ class Menu():
     def __init__(self):
         
         # load textures
-        self.menu_txtr = pygame.image.load(f'./textures/menu.jpg')
-        self.play_txtr = pygame.image.load(f'./textures/btn_play.jpg')
-        self.quit_txtr = pygame.image.load(f'./textures/btn_quit.jpg')
+        self.menu_txtr = pygame.image.load(f'{PATH}/textures/menu.jpg')
+        self.play_txtr = pygame.image.load(f'{PATH}/textures/btn_play.jpg')
+        self.quit_txtr = pygame.image.load(f'{PATH}/textures/btn_quit.jpg')
 
         # define the position of the buttons
         self.btn_w = 200
@@ -45,7 +45,7 @@ class Menu():
         Mapp the differents button click to there actions
         """
         if not self.msc:
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/menu_song.mp3'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/menu_song.mp3'))
             self.msc = True
 
         if self.is_focus(self.pos_btn_play, (self.btn_w, self.btn_h)):
@@ -70,7 +70,7 @@ class Menu():
         """
         Create main entities just before launching the game
         """
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/main_theme.mp3'))
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/main_theme.mp3'))
         self.msc = False
         mario = Mario(H_MARIO, WIDTH_MARIO, 0, HEIGHT-H_FLOOR-H_MARIO, H_JUMP)
         field = Field(H_FLOOR, WIDTH-400, 10)

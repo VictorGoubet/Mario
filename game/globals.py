@@ -1,3 +1,4 @@
+import os
 import pygame
 
 HEIGHT, WIDTH = 400, 700 # windows size
@@ -7,6 +8,7 @@ FPS = 25
 H_JUMP = 100 # jump height
 crt_chnl = 1
 N_END = 5
+PATH = os.path.dirname(__file__)
 
 pygame.init()
 
