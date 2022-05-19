@@ -1,27 +1,45 @@
 
 import pygame
 import sys, os
-import random as rd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../game/'))
+from globals import HEIGHT
 from launcher import game
 
 
+class Model():
 
-def key_function(state):
-    """
-    Return action given a state
-    """
-    mario, field = state
+    def __init__(self) -> None:
+        self.time_until_next_jump = 0
 
-    keys = {k:False for k in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]}
+    def key_function(self, state):
+        """
+        Return action given a state
+        """
+        mario, field = state
 
-    n_key = rd.randint(0, len(keys))
-    actions = rd.choices(list(keys.keys()), k=n_key)
-
-    for a in actions:
-        keys[a] = True
-    return keys
+        keys = {k:False for k in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]}
 
 
-game(key_function)
+        min_x = 9999
+        for x, y in field.floor + field.nx_floor:
+            dist =  x - (mario.x + mario.width) 
+            if y == HEIGHT and min_x > dist >= 0:
+                min_x = dist
+
+        if self.time_until_next_jump == 0:
+            if min_x < 25:
+                keys[pygame.K_UP] = True
+                self.time_until_next_jump = 2
+            
+            keys[pygame.K_RIGHT] = True
+        else:
+            self.time_until_next_jump -= 1
+
+
+        return keys
+
+
+model = Model()
+
+game(model.key_function)
