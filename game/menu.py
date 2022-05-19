@@ -7,16 +7,23 @@ from field import Field
 
 
 class Menu():
+    """
+    Class of the menu panel
+    """
 
     def __init__(self):
-            
-        self.menu_txtr = pygame.image.load(f'./texture/menu.jpg')
-        self.play_txtr = pygame.image.load(f'./texture/btn_play.jpg')
-        self.quit_txtr = pygame.image.load(f'./texture/btn_quit.jpg')
+        
+        # load textures
+        self.menu_txtr = pygame.image.load(f'./textures/menu.jpg')
+        self.play_txtr = pygame.image.load(f'./textures/btn_play.jpg')
+        self.quit_txtr = pygame.image.load(f'./textures/btn_quit.jpg')
+
+        # define the position of the buttons
         self.btn_w = 200
         self.btn_h = 66
         self.pos_btn_play = (WIDTH//2-50 - self.btn_w, HEIGHT-15 - self.btn_h)
         self.pos_btn_quit = (WIDTH//2+50, HEIGHT-15-self.btn_h)
+
         self.display = True
         self.run = True
         self.click = False
@@ -24,6 +31,9 @@ class Menu():
         
 
     def show(self):
+        """
+        show the different buttons of the menu
+        """
         win.blit(self.menu_txtr, (0, 0))
         win.blit(self.play_txtr, self.pos_btn_play)
         win.blit(self.quit_txtr, self.pos_btn_quit)
@@ -31,8 +41,11 @@ class Menu():
         
 
     def update(self):
+        """
+        Mapp the differents button click to there actions
+        """
         if not self.msc:
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('./song/menu_song.mp3'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/menu_song.mp3'))
             self.msc = True
 
         if self.is_focus(self.pos_btn_play, (self.btn_w, self.btn_h)):
@@ -54,7 +67,10 @@ class Menu():
         
      
     def initialize_game(self):
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound('./song/main_theme.mp3'))
+        """
+        Create main entities just before launching the game
+        """
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound('./songs/main_theme.mp3'))
         self.msc = False
         mario = Mario(H_MARIO, WIDTH_MARIO, 0, HEIGHT-H_FLOOR-H_MARIO, H_JUMP)
         field = Field(H_FLOOR, WIDTH-400, 10)
@@ -64,6 +80,9 @@ class Menu():
         
 
     def is_focus(self, pos, size):
+        """
+        Handle the mouse focus on the buttons
+        """
         x, y = pos
         w, h = size
         x_m, y_m = pygame.mouse.get_pos()

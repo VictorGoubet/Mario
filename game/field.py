@@ -3,6 +3,9 @@ import random as rd
 from globals import *
 
 class Field():
+    """
+    Class defining the field
+    """
 
     def __init__(self, h_floor, x_off, speed):
         self.h_floor = h_floor
@@ -10,30 +13,36 @@ class Field():
         self.speed = speed
         self.s_coin = 25
 
+        # prepare the current floor and the next one (next frame)
         self.floor = self.create_floor(False)
         self.nx_floor = self.create_floor()
 
+        # prepare the current coins and the next one (next frame)
         self.coins = self.generate_coins(False)
         self.nx_coins = self.generate_coins()
-        self.n_block = 1
 
+        self.n_block = 1
         self.x_flag = None
         
 
-        # texture
-        self.sky_txtr = pygame.image.load(r'./texture/sky.png')
-        self.coin_txtr = pygame.image.load(r'./texture/coin.png')
+        # load textures
+        self.sky_txtr = pygame.image.load(r'./textures/sky.png')
+        self.coin_txtr = pygame.image.load(r'./textures/coin.png')
         self.coin_txtr = pygame.transform.scale(self.coin_txtr, (self.s_coin, self.s_coin))
-        self.floor_txtr = pygame.image.load(r'./texture/floor.png')
-        self.clock_txtr = pygame.image.load(r'./texture/clock.png')
-        self.flag_txtr = pygame.image.load(r'./texture/flag.png')
+        self.floor_txtr = pygame.image.load(r'./textures/floor.png')
+        self.clock_txtr = pygame.image.load(r'./textures/clock.png')
+        self.flag_txtr = pygame.image.load(r'./textures/flag.png')
         self.flag_txtr = pygame.transform.scale(self.flag_txtr, (110, 250))
     
     def create_floor(self, next=True):
+        """
+        generate an array or coordinates representing the floor
+        """
         floor = []
         for k in range(WIDTH//self.h_floor):
             x = k * self.h_floor
             x += WIDTH if next else 0
+            # generate random holes
             if len(floor) > 0 and floor[-1][1] != HEIGHT and rd.randint(0, 1):
                 y = HEIGHT 
             else:
@@ -44,6 +53,9 @@ class Field():
 
     
     def generate_coins(self, next=True):
+        """
+        Generate the random coordinates of coins
+        """
         coins = []
         y0 = HEIGHT-H_FLOOR-H_MARIO
         for _ in range(rd.randint(1, 4)):
@@ -57,6 +69,9 @@ class Field():
 
     
     def show(self, mario):
+        """
+        Show all the field and all the belonging entities
+        """
         
         self.move_field(mario)
 
@@ -66,14 +81,17 @@ class Field():
         self.show_entities(self.coins, self.nx_coins, self.coin_txtr)
         self.show_entities(self.floor, self.nx_floor, self.floor_txtr)
 
-        if self.n_block+1>= N_END:
-            floor = self.nx_floor if self.n_block+1==N_END else self.floor
+        if self.n_block + 1 >= N_END:
+            floor = self.nx_floor if self.n_block + 1 == N_END else self.floor
             self.x_flag = [x for x, y in floor if y != HEIGHT][-1]
-            win.blit(self.flag_txtr, (self.x_flag, HEIGHT-H_FLOOR-245))
+            win.blit(self.flag_txtr, (self.x_flag, HEIGHT - H_FLOOR - 245))
 
 
 
     def show_entities(self, ent, nx_ent, txtr):
+        """
+        show a texture on the screen
+        """
         for x, y in ent:
             win.blit(txtr, (x, y))
         for x_n, y_n in nx_ent:
@@ -82,7 +100,10 @@ class Field():
 
     
     def move_field(self, mario):
-
+        """
+        Slide the field and the coins when mario moves
+        """
+        # move the field
         if mario.x > self.x_off:
             self.floor = [[x-self.speed, y] for x, y in self.floor]
             self.nx_floor = [[x-self.speed, y] for x, y in self.nx_floor]
@@ -92,6 +113,7 @@ class Field():
 
             mario.x -= self.speed
         
+        # set current floor as next floor and generate a new floor
         if self.nx_floor[0][0] == 0:
             self.floor = self.nx_floor
             self.coins = self.nx_coins
