@@ -29,11 +29,11 @@ class Game():
                            H_FLOOR - H_MARIO, H_JUMP, self.win)
         self.field = Field(H_FLOOR, WIDTH - 400, 10, self.win)
 
-    def launch(self):
+    def launch(self, key_function=None):
         """
         Launch the game
         """
-        self.mainloop()
+        self.mainloop(key_function)
         pygame.quit()
 
     def get_pixel_screen(self):
@@ -42,7 +42,7 @@ class Game():
         """
         return pygame.Surface.get_buffer(self.win).raw
 
-    def mainloop(self, key_function=None):
+    def mainloop(self, key_function):
         """
         main loop of the game
         """
@@ -61,12 +61,11 @@ class Game():
                 t0 = self.menu.update()
             else:
                 # manage physics
-                keys = key_function(
-                    [self.mario, self.field]) if key_function else pygame.key.get_pressed()
+                keys = key_function(self) if key_function else pygame.key.get_pressed()
                 moves_thread = myThread(
                     "moves", lambda: self.mario.move(keys, self.field))
                 moves_thread.start()
-                self.field.move_ennemies()
+                self.field.move_ennemies(self.mario.freeze)
 
                 # display the field and mario
                 self.field.show(self.mario)

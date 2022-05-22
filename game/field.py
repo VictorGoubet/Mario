@@ -129,12 +129,12 @@ class Field():
         for x_n, y_n in nx_ent:
             self.win.blit(txtr, (x_n, y_n))
 
-    def move_ennemies(self):
+    def move_ennemies(self, freeze):
         """
         move the ennemies
         """
         for e in self.ennemies + self.nx_ennemies:
-            e.random_move(self)
+            e.random_move(self, freeze)
 
     def move_field(self, mario):
         """

@@ -145,23 +145,24 @@ class Mario():
         """
         Check if mario is colliding with an ennemy
         """
-        for e in field.ennemies + field.nx_ennemies:
-            if self.colision_x(e.x, e.width, self.x, self.width) or \
-               self.colision_x(self.x, self.width, e.x, e.width):
-                if e.y + 10 >= (self.y + self.height) >= e.y - 5:
-                    try:
-                        field.ennemies.remove(e)
-                    except:
-                        field.nx_ennemies.remove(e)
-                    self.score += 10
-                    self.play_sound('crush', 0.2)
+        if self.freeze == False:
+            for e in field.ennemies + field.nx_ennemies:
+                if self.colision_x(e.x, e.width, self.x, self.width) or \
+                self.colision_x(self.x, self.width, e.x, e.width):
+                    if e.y + 10 >= (self.y + self.height) >= e.y - 5:
+                        try:
+                            field.ennemies.remove(e)
+                        except:
+                            field.nx_ennemies.remove(e)
+                        self.score += 10
+                        self.play_sound('crush', 0.2)
 
-                elif (self.y + self.height) > e.y and not self.freeze:
-                    pygame.mixer.Channel(0).play(
-                        pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
-                    self.freeze = True
-                    time.sleep(3)
-                    self.finish = True
+                    elif (self.y + self.height) > e.y and not self.freeze:
+                        pygame.mixer.Channel(0).play(
+                            pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
+                        self.freeze = True
+                        time.sleep(3)
+                        self.finish = True
 
     def check_holes(self, field):
         """

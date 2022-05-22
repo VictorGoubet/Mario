@@ -33,21 +33,22 @@ class Ennemy():
         except:
             pass
 
-    def random_move(self, field):
-        all_floor = field.floor + field.nx_floor
-        has_moved = False
+    def random_move(self, field, freeze):
+        if freeze == False:
+            all_floor = field.floor + field.nx_floor
+            has_moved = False
 
-        for i in range(len(all_floor)):
-            if all_floor[i][0] == self.x and (i == 0 or all_floor[i-1][1] == HEIGHT):
-                self.x += self.speed
-                self.prev_move = self.speed
-                has_moved = True
-                break
-            elif all_floor[i][0] == (self.x + self.width) and (i == len(all_floor) - 1 or all_floor[i][1] == HEIGHT):
-                self.x -= self.speed
-                self.prev_move = -self.speed
-                has_moved = True
-                break
+            for i in range(len(all_floor)):
+                if all_floor[i][0] == self.x and (i == 0 or all_floor[i-1][1] == HEIGHT):
+                    self.x += self.speed
+                    self.prev_move = self.speed
+                    has_moved = True
+                    break
+                elif all_floor[i][0] == (self.x + self.width) and (i == len(all_floor) - 1 or all_floor[i][1] == HEIGHT):
+                    self.x -= self.speed
+                    self.prev_move = -self.speed
+                    has_moved = True
+                    break
 
-        if has_moved == False:
-            self.x += self.prev_move
+            if has_moved == False:
+                self.x += self.prev_move
