@@ -1,9 +1,7 @@
-import time 
+import time
 import pygame
 
-from globals import *
-from mario import Mario
-from field import Field
+from game.globals import *
 
 
 class Menu():
@@ -11,8 +9,9 @@ class Menu():
     Class of the menu panel
     """
 
-    def __init__(self):
-        
+    def __init__(self, win):
+
+        self.win = win
         # load textures
         self.menu_txtr = pygame.image.load(f'{PATH}/textures/menu.jpg')
         self.play_txtr = pygame.image.load(f'{PATH}/textures/btn_play.jpg')
@@ -28,24 +27,22 @@ class Menu():
         self.run = True
         self.click = False
         self.msc = False
-        
 
     def show(self):
         """
         show the different buttons of the menu
         """
-        win.blit(self.menu_txtr, (0, 0))
-        win.blit(self.play_txtr, self.pos_btn_play)
-        win.blit(self.quit_txtr, self.pos_btn_quit)
-
-        
+        self.win.blit(self.menu_txtr, (0, 0))
+        self.win.blit(self.play_txtr, self.pos_btn_play)
+        self.win.blit(self.quit_txtr, self.pos_btn_quit)
 
     def update(self):
         """
         Mapp the differents button click to there actions
         """
         if not self.msc:
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/menu_song.mp3'))
+            pygame.mixer.Channel(0).play(
+                pygame.mixer.Sound(f'{PATH}/songs/menu_song.mp3'))
             self.msc = True
 
         if self.is_focus(self.pos_btn_play, (self.btn_w, self.btn_h)):
@@ -53,8 +50,10 @@ class Menu():
             if self.click:
                 self.display = False
                 self.click = False
-                return self.initialize_game()
-                
+                pygame.mixer.Channel(0).play(
+                    pygame.mixer.Sound(f'{PATH}/songs/main_theme.mp3'))
+                self.msc = False
+
         elif self.is_focus(self.pos_btn_quit, (self.btn_w, self.btn_h)):
             pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
             if self.click:
@@ -63,21 +62,7 @@ class Menu():
         else:
             pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
-        return None, None, None
-        
-     
-    def initialize_game(self):
-        """
-        Create main entities just before launching the game
-        """
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound(f'{PATH}/songs/main_theme.mp3'))
-        self.msc = False
-        mario = Mario(H_MARIO, WIDTH_MARIO, 0, HEIGHT-H_FLOOR-H_MARIO, H_JUMP)
-        field = Field(H_FLOOR, WIDTH-400, 10)
-        t0 = time.time()
-        return mario, field, t0
-    
-        
+        return time.time()
 
     def is_focus(self, pos, size):
         """

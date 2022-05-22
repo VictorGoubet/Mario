@@ -1,5 +1,6 @@
 import threading
 
+
 class myThread(threading.Thread):
    """
    Allow to execute a function f in a thread
@@ -9,6 +10,6 @@ class myThread(threading.Thread):
       threading.Thread.__init__(self)
       self.name = name
       self.f = f
-      
+
    def run(self):
       self.f()
