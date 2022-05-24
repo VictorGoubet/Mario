@@ -2,9 +2,9 @@
 import pygame
 import sys, os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../game/'))
-from globals import HEIGHT
-from launcher import game
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+from game.globals import HEIGHT
+from game.__main__ import Game
 
 
 class Model():
@@ -16,14 +16,13 @@ class Model():
         """
         Return action given a state
         """
-        mario, field = state
 
         keys = {k:False for k in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]}
 
 
         min_x = 9999
-        for x, y in field.floor + field.nx_floor:
-            dist =  x - (mario.x + mario.width) 
+        for x, y in state.field.floor + state.field.nx_floor:
+            dist =  x - (state.mario.x + state.mario.width) 
             if y == HEIGHT and min_x > dist >= 0:
                 min_x = dist
 
@@ -39,7 +38,6 @@ class Model():
 
         return keys
 
-
+mario_game = Game()
 model = Model()
-
-game(model.key_function)
+mario_game.launch(model.key_function)
