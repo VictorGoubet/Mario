@@ -2,19 +2,20 @@ import time
 import pygame
 from game.globals import *
 
-
 class Mario():
     """
     Class of the player
     """
 
-    def __init__(self, height, width, x, y, h_jump, win):
+    def __init__(self, height, width, x, y, h_jump, win, animate = True):
 
         # mario size
         self.height = height
         self.width = width
 
         self.win = win
+
+        self.animate = animate
 
         # mario position
         self.x = x
@@ -85,13 +86,15 @@ class Mario():
         """
         Launch the huge fall when mario is in a hole
         """
-        pygame.mixer.Channel(0).play(
-            pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
-        self.freeze = True
-        while self.y < HEIGHT:
-            self.y += 1
-            time.sleep(1/1000)
-        time.sleep(3)
+        if self.animate:
+            pygame.mixer.Channel(0).play(
+                pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
+            self.freeze = True
+            while self.y < HEIGHT:
+                self.y += 1
+                time.sleep(1/1000)
+            time.sleep(3)
+        self.score -= 100
         self.finish = True
 
     def move(self, keys, field):
@@ -117,7 +120,8 @@ class Mario():
             # after moving, check the situation
             self.check_all(field)
 
-        time.sleep(1)
+        if self.animate:
+            time.sleep(1)
 
     def check_all(self, field):
         """
@@ -136,10 +140,14 @@ class Mario():
             self.freeze = True
             self.x = field.x_flag
             self.y = HEIGHT - H_FLOOR - 240
-            pygame.mixer.Channel(0).play(
-                pygame.mixer.Sound(f'{PATH}/songs/success.mp3'))
-            time.sleep(3)
+            if self.animate:
+                pygame.mixer.Channel(0).play(
+                    pygame.mixer.Sound(f'{PATH}/songs/success.mp3'))
+                
+                time.sleep(3)
+            self.score += 100
             self.finish = True
+
 
     def check_ennemies(self, field):
         """
@@ -148,7 +156,7 @@ class Mario():
         if self.freeze == False:
             for e in field.ennemies + field.nx_ennemies:
                 if self.colision_x(e.x, e.width, self.x, self.width) or \
-                self.colision_x(self.x, self.width, e.x, e.width):
+                        self.colision_x(self.x, self.width, e.x, e.width):
                     if e.y + 10 >= (self.y + self.height) >= e.y - 5:
                         try:
                             field.ennemies.remove(e)
@@ -158,11 +166,16 @@ class Mario():
                         self.play_sound('crush', 0.2)
 
                     elif (self.y + self.height) > e.y and not self.freeze:
-                        pygame.mixer.Channel(0).play(
-                            pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
-                        self.freeze = True
-                        time.sleep(3)
+                        if self.animate:
+                            pygame.mixer.Channel(0).play(
+                                pygame.mixer.Sound(f'{PATH}/songs/gameover.mp3'))
+                            self.freeze = True
+                            
+                            time.sleep(3)
+                        
+                        self.score -= 100
                         self.finish = True
+
 
     def check_holes(self, field):
         """

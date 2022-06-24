@@ -8,10 +8,12 @@ from game.field import Field
 from game.thread import myThread
 
 
+
 class Game():
 
-    def __init__(self):
+    def __init__(self, animate = True):
 
+        self.animate = animate
         # Init pygame
         pygame.init()
 
@@ -26,23 +28,69 @@ class Game():
         # Init entities
         self.menu = Menu(self.win)
         self.mario = Mario(H_MARIO, WIDTH_MARIO, 0, HEIGHT -
-                           H_FLOOR - H_MARIO, H_JUMP, self.win)
+                           H_FLOOR - H_MARIO, H_JUMP, self.win, animate = animate)
         self.field = Field(H_FLOOR, WIDTH - 400, 10, self.win)
 
-    def launch(self, key_function=None):
+        self.mapped_moves = {
+            0 : [pygame.K_LEFT],
+            1 : [pygame.K_RIGHT],
+            2 : [pygame.K_UP],
+            3 : [pygame.K_LEFT, pygame.K_UP],
+            4 : [pygame.K_RIGHT, pygame.K_UP],
+            5 : []
+        }
+
+    def launch(self):
         """
         Launch the game
         """
-        self.mainloop(key_function)
+        self.mainloop()
         pygame.quit()
 
-    def get_pixel_screen(self):
-        """
-        Return the screen as a pixel array
-        """
-        return pygame.Surface.get_buffer(self.win).raw
 
-    def mainloop(self, key_function):
+    def step(self, action):
+        self.clock.tick(FPS)
+        _ = pygame.event.get()
+        score0 = self.mario.score
+
+        action = self.mapped_moves[action]
+        action = {k: True if k in action else False for k in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]}
+
+        moves_thread = myThread(
+                    "moves", lambda: self.mario.move(action, self.field))
+               
+        moves_thread.start()
+
+        self.show_env()
+        
+        screen = pygame.surfarray.array3d(self.win) / 255
+
+        reward = self.mario.score - score0
+
+        pygame.display.update()
+
+
+        return screen, reward, self.mario.finish
+
+    def show_env(self):
+        self.field.move_ennemies(self.mario.freeze)
+        # display the field and mario
+        self.field.show(self.mario)
+        self.mario.show()
+
+    def reset(self):
+
+        self.mario = Mario(H_MARIO, WIDTH_MARIO, 0, HEIGHT -
+                           H_FLOOR - H_MARIO, H_JUMP, self.win,  animate = self.animate)
+        self.field = Field(H_FLOOR, WIDTH - 400, 10, self.win)
+
+        
+        self.show_env()
+        pygame.display.update()
+
+
+
+    def mainloop(self):
         """
         main loop of the game
         """
@@ -61,9 +109,10 @@ class Game():
                 t0 = self.menu.update()
             else:
                 # manage physics
-                keys = key_function(self) if key_function else pygame.key.get_pressed()
+                keys = pygame.key.get_pressed()
                 moves_thread = myThread(
                     "moves", lambda: self.mario.move(keys, self.field))
+               
                 moves_thread.start()
                 self.field.move_ennemies(self.mario.freeze)
 
@@ -91,5 +140,13 @@ class Game():
 
 
 if __name__ == '__main__':
-    mario_game = Game()
-    mario_game.launch()
+    mario_game = Game(animate = False)
+    #mario_game.launch()
+    n = 0
+    while not mario_game.mario.finish:
+        mario_game.step(1)
+        if mario_game.mario.finish and n < 3:
+            mario_game.reset()
+            n+=1
+
+
