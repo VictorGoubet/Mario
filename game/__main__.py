@@ -6,6 +6,7 @@ from game.menu import Menu
 from game.mario import Mario
 from game.field import Field
 from game.thread import myThread
+from model.DeepQ import DeepQ
 
 
 
@@ -140,13 +141,15 @@ class Game():
 
 
 if __name__ == '__main__':
-    mario_game = Game(animate = False)
-    #mario_game.launch()
+    env = Game(animate = False)
+    model = DeepQ( 1, 0.4, env, 32)
+    model.train(10)
+    '''#mario_game.launch()
     n = 0
     while not mario_game.mario.finish:
         mario_game.step(1)
         if mario_game.mario.finish and n < 3:
             mario_game.reset()
-            n+=1
+            n+=1'''
 
 
