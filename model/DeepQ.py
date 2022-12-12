@@ -28,14 +28,11 @@ class DQN(nn.Module):
     def forward(self, x):
 
         for i in range(0,self.n_layers,2):
-            print(x.size())
             x = F.relu(self.layers[i](x))
             x = self.layers[i+1](x)
     
-        print(x.size())
         x = nn.Flatten()(x)
         x = self.output(x)
-        x.size()
         return x
 
 
@@ -61,12 +58,11 @@ class DeepQ:
         self.env = env
         self.batch_size = batch_size
 
-        self.n_action = env.n_action #FIXME: ADD REAL NAME
-        self.n_state = env.n_state #FIXME: ADD REAL NAME
+        self.n_action = 6
 
-        self.Q = np.zeros((self.n_state, self.n_action)) #FIXME: Change to adaptable n state
+        #self.Q = np.zeros((self.n_state, self.n_action)) #FIXME: Change to adaptable n state
 
-        self.policy_net = DQN(1, 16, 3, n_layers = 2)
+        self.policy_net = DQN((700*400), 16, 3, n_layers = 2)
         self.target_net = DQN(1, 16, 3, n_layers = 2)
 
         self.target_net.load_state_dict(self.policy_net.state_dict())
@@ -81,13 +77,14 @@ class DeepQ:
         self.target_update = 10
 
     def choose_action(self, state):
+        print(state)
         #epsilon greedy choice of action ??
         if random.random() < self.epsilon:
-            return torch.Tensor([[random.randint(0, self.env.n_action - 1)]])
+            return torch.Tensor([[random.randint(0, self.n_action - 1)]])
         else:
             with torch.no_grad():
                 #We chose the action with the highest expected reward
-                return self.policy_net(state).max(1)[1].view(1, 1)
+                return self.policy_net(torch.tensor(state)).max(1)[1].view(1, 1)
 
 
     def update_model(self):
@@ -141,8 +138,8 @@ class DeepQ:
         for i in range(num_episode):
             #Initialisation
             state = self.env.reset()
-            state = self.env.get_screen() #FIXME: ADD REAL NAME
-            #last_screen = self.env.get_screen() #FIXME: ADD REAL NAME
+            state = self.env.step(5) #Stay
+            #last_screen = self.env.step(5) #Stay
             #They are compared in the tutorial ? Why ? Applicable ? 
 
             #We play until the end of the episode
@@ -151,7 +148,7 @@ class DeepQ:
                 #Select the action
                 action = self.choose_action(state)
                 #perform the action
-                next_state, reward, done, _ = self.env.step(action) #FIXME: ADD REAL NAME
+                next_state, reward, done = self.env.step(action.item())
                 if done:
                     next_state = None
                 #We save the observation
