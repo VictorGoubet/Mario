@@ -10,7 +10,7 @@ from game.thread import myThread
 
 class Game():
 
-    def __init__(self):
+    def __init__(self, key_function=None):
 
         # Init pygame
         pygame.init()
@@ -18,6 +18,8 @@ class Game():
         self.win = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font('freesansbold.ttf', 13)
+        self.mode = 'train' if self.key_function else 'game'
+        self.key_function = key_function
 
         pygame.mixer.init()
         pygame.mixer.set_num_channels(20)
@@ -29,11 +31,11 @@ class Game():
                            H_FLOOR - H_MARIO, H_JUMP, self.win)
         self.field = Field(H_FLOOR, WIDTH - 400, 10, self.win)
 
-    def launch(self, key_function=None):
+    def launch(self):
         """
         Launch the game
         """
-        self.mainloop(key_function)
+        self.mainloop(self.key_function)
         pygame.quit()
 
     def get_pixel_screen(self):
@@ -42,7 +44,13 @@ class Game():
         """
         return pygame.Surface.get_buffer(self.win).raw
 
-    def mainloop(self, key_function):
+    
+    def training_box(self):
+        """
+        Special mode for training
+        """
+
+    def mainloop(self):
         """
         main loop of the game
         """
@@ -61,7 +69,7 @@ class Game():
                 t0 = self.menu.update()
             else:
                 # manage physics
-                keys = key_function(self) if key_function else pygame.key.get_pressed()
+                keys = pygame.key.get_pressed()
                 moves_thread = myThread(
                     "moves", lambda: self.mario.move(keys, self.field))
                 moves_thread.start()

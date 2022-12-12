@@ -6,6 +6,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 import random
 from collections import deque, namedtuple
+
+
+from game.__main__ import Game
+
 class DQN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, n_layers = 2):
         super(DQN, self).__init__()
@@ -170,6 +174,8 @@ class DeepQ:
 
 if __name__ == '__main__':
     print('ok')
+    
+    mario_game = Game()
     '''test_tensor = torch.randn(1, 1, 64, 64)
     model = DeepModel(1, 16, 3, n_layers = 4)
     result = model.forward(test_tensor)
